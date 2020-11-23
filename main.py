@@ -21,6 +21,7 @@ def main():
     pygame.init()
     pygame.display.set_caption("Pac-Man")
     window = pygame.display.set_mode((WALL_SIZE * 56, WALL_SIZE * 62))
+    clock = pygame.time.Clock()
 
     title_font = pygame.font.SysFont("textures/fonts/font.otf", 50)
 
@@ -40,19 +41,14 @@ def main():
                         game.start(window)
                         pygame.display.update()
                 elif game.location == 'level 1':
-                    print(event.key)
                     if event.key == pygame.K_w or event.key == 1094:
                         game.pacman.newDir = 'up'
-                        print('up')
                     elif event.key == pygame.K_a or event.key == 1092:
                         game.pacman.newDir = 'left'
-                        print('left')
                     elif event.key == pygame.K_s or event.key == 1099:
                         game.pacman.newDir = 'down'
-                        print('down')
                     elif event.key == pygame.K_d or event.key == 1074:
                         game.pacman.newDir = 'right'
-                        print('right')
 
         if game.location == "menu":
             draw_menu(window, title_font)
@@ -62,7 +58,7 @@ def main():
 
         pygame.display.flip()
         pygame.display.update()
-        pygame.time.delay(10)
+        clock.tick(20)
 
 
 if __name__ == '__main__':

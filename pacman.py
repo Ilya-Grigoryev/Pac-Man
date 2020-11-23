@@ -14,18 +14,28 @@ class Pacman(pygame.sprite.Sprite):
         self.newDir = 'up'
         self.image = pygame.Surface((self.wall_size*4, self.wall_size*4))
         self.image.fill(pygame.Color(255, 255, 0))
-        self.rect = pygame.Rect((x)*wall_size, (y)*wall_size, 4*wall_size, 4*wall_size)
-        self.time = time.time()
+        self.rect = pygame.Rect(x*wall_size, y*wall_size, 4*wall_size, 4*wall_size)
 
     def draw(self):
         self.screen.blit(self.image, (self.rect.x-2*self.wall_size, self.rect.y-2*self.wall_size))
 
+        if (self.rect.x - 2 * self.wall_size) <= 0:
+            self.screen.blit(self.image,
+                             (self.rect.x - 2 * self.wall_size + 56 * self.wall_size, self.rect.y - 2 * self.wall_size))
+        if (self.rect.x + 2 * self.wall_size) >= 56 *  self.wall_size:
+            self.screen.blit(self.image,
+                             (self.rect.x - 2 * self.wall_size - 56 * self.wall_size, self.rect.y - 2 * self.wall_size))
+
+        if (self.rect.x + 2 * self.wall_size) <= 0:
+            self.rect.x += 56 * self.wall_size
+            self.x = 54
+        if (self.rect.x - 2 * self.wall_size) >= 56 *  self.wall_size:
+            self.rect.x -= 56 * self.wall_size
+            self.x = 1
+
+
     def update(self):
-        # if time.time() - self.time < 100:
-        #     return
-        self.time = time.time()
         self.change_dir()
-        # self.x % 1.0 == 0 or self.y % 1.0 == 0 and
         if not self.is_collide(self.dir):
             if self.dir == 'up':
                 self.y -= self.speed
@@ -40,22 +50,27 @@ class Pacman(pygame.sprite.Sprite):
         self.draw()
 
     def is_collide(self, collide_dir):
-        return collide_dir == 'up' \
-            and (self.level[self.y - 3][self.x] == '-'
-            or self.level[self.y - 3][self.x-2] == '-'
-            or self.level[self.y - 3][self.x+1] == '-') \
-        or collide_dir == 'down' \
-            and (self.level[self.y + 2][self.x] == '-'
-            or self.level[self.y + 2][self.x-2] == '-'
-            or self.level[self.y + 2][self.x+1] == '-') \
-        or collide_dir == 'left' \
-            and (self.level[self.y][self.x - 3] == '-'
-            or self.level[self.y-2][self.x - 3] == '-'
-            or self.level[self.y+1][self.x - 3] == '-') \
-        or collide_dir == 'right'\
-            and (self.level[self.y][self.x + 2] == '-'
-            or self.level[self.y-2][self.x + 2] == '-'
-            or self.level[self.y+1][self.x + 2] == '-')
+        try:
+            x = self.x
+            y = self.y
+            return collide_dir == 'up' \
+                and (self.level[y - 3][x] == '-'
+                or self.level[y - 3][x-2] == '-'
+                or self.level[y - 3][x+1] == '-') \
+            or collide_dir == 'down' \
+                and (self.level[y + 2][x] == '-'
+                or self.level[y + 2][x-2] == '-'
+                or self.level[y + 2][x+1] == '-') \
+            or collide_dir == 'left' \
+                and (self.level[y][x - 3] == '-'
+                or self.level[y-2][x - 3] == '-'
+                or self.level[y+1][x - 3] == '-') \
+            or collide_dir == 'right'\
+                and (self.level[y][x + 2] == '-'
+                or self.level[y-2][x + 2] == '-'
+                or self.level[y+1][x + 2] == '-')
+        except IndexError as err:
+            pass
 
 
     def change_dir(self):
