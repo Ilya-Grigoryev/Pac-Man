@@ -1,5 +1,4 @@
 import pygame
-import time
 
 
 class Pacman(pygame.sprite.Sprite):
@@ -34,8 +33,9 @@ class Pacman(pygame.sprite.Sprite):
             self.x = 1
 
 
-    def update(self):
+    def update(self, walls, dots):
         self.change_dir()
+        # if not self.is_collide(walls):
         if not self.is_collide(self.dir):
             if self.dir == 'up':
                 self.y -= self.speed
@@ -70,7 +70,9 @@ class Pacman(pygame.sprite.Sprite):
                 or self.level[y-2][x + 2] == '-'
                 or self.level[y+1][x + 2] == '-')
         except IndexError as err:
-            pass
+            return collide_dir != 'right'
+        # return self.rect.collidelist(list(map(lambda w: w.rect, walls))) != -1
+
 
 
     def change_dir(self):

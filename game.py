@@ -1,5 +1,6 @@
 import pygame
 from block import Wall
+from dot import Dot
 from pacman import Pacman
 
 
@@ -9,25 +10,32 @@ class Game:
         self.location = "menu"
         self.level = None
         self.pacman = None
-        # self.entities = pygame.sprite.Group()
         # сюда будем дописывать общие переменные
 
     def start(self, screen):
-        # draw level
         with open("level.txt", 'r') as f:
             self.level = f.read().split('\n')
 
-        # draw pac-man
         self.pacman = Pacman(screen, 28, 47, self.level, self.wall_size)
-        # self.pacman.draw()
 
+        self.walls = []
+        self.dots = []
 
-    def update(self, screen):
-        screen.fill((0, 0, 0))
         for j, string in enumerate(self.level):
             for i, char in enumerate(string):
                 if char == '-':
                     wall = Wall(i * self.wall_size, j * self.wall_size, self.wall_size)
-                    wall.draw(screen)
+                    self.walls.append(wall)
+                elif char == '*':
+                    food = Dot(i * self.wall_size, j * self.wall_size, self.wall_size//2)
+                    self.dots.append(food)
 
-        self.pacman.update()
+    def update(self, screen):
+        screen.fill((0, 0, 0))
+
+        for wall in self.walls:
+            wall.draw(screen)
+        for dot in self.dots:
+            dot.draw(screen)
+
+        self.pacman.update(self.walls, self.dots)
