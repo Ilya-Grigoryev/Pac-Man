@@ -13,24 +13,25 @@ class Pacman(pygame.sprite.Sprite):
         self.newDir = 'up'
         self.image = pygame.Surface((self.wall_size*4, self.wall_size*4))
         self.image.fill(pygame.Color(255, 255, 0))
-        self.rect = pygame.Rect(x*wall_size, y*wall_size, 4*wall_size, 4*wall_size)
+        self.rect = pygame.Rect(x*wall_size-2*self.wall_size, y*wall_size-2*self.wall_size, 4*wall_size, 4*wall_size)
+        self.food_counter = 0
 
     def draw(self):
-        self.screen.blit(self.image, (self.rect.x-2*self.wall_size, self.rect.y-2*self.wall_size))
+        self.screen.blit(self.image, (self.rect.x, self.rect.y))
 
-        if (self.rect.x - 2 * self.wall_size) <= 0:
+        if self.rect.x <= 0:
             self.screen.blit(self.image,
-                             (self.rect.x - 2 * self.wall_size + 56 * self.wall_size, self.rect.y - 2 * self.wall_size))
-        if (self.rect.x + 2 * self.wall_size) >= 56 *  self.wall_size:
+                             (self.rect.x + 56 * self.wall_size, self.rect.y))
+        if (self.rect.x + 4 * self.wall_size) >= 56 *  self.wall_size:
             self.screen.blit(self.image,
-                             (self.rect.x - 2 * self.wall_size - 56 * self.wall_size, self.rect.y - 2 * self.wall_size))
+                             (self.rect.x - 56 * self.wall_size, self.rect.y))
 
-        if (self.rect.x + 2 * self.wall_size) <= 0:
+        if (self.rect.x + 4 * self.wall_size) <= 0:
             self.rect.x += 56 * self.wall_size
-            self.x = 54
-        if (self.rect.x - 2 * self.wall_size) >= 56 *  self.wall_size:
+            self.x = 52
+        if self.rect.x >= 56 * self.wall_size:
             self.rect.x -= 56 * self.wall_size
-            self.x = 1
+            self.x = 0
 
 
     def update(self, walls, dots):
@@ -47,6 +48,13 @@ class Pacman(pygame.sprite.Sprite):
                 self.x += self.speed
             self.rect.x = (self.x * self.wall_size)
             self.rect.y = (self.y * self.wall_size)
+
+        for dot in dots:
+            if dot.rect.colliderect(self.rect):
+                dots.pop(dots.index(dot))
+                self.food_counter += 1
+                print(self.food_counter)
+
         self.draw()
 
     def is_collide(self, collide_dir):
@@ -54,21 +62,21 @@ class Pacman(pygame.sprite.Sprite):
             x = self.x
             y = self.y
             return collide_dir == 'up' \
-                and (self.level[y - 3][x] == '-'
-                or self.level[y - 3][x-2] == '-'
-                or self.level[y - 3][x+1] == '-') \
+                and (self.level[y - 1][x] == '-'
+                or self.level[y - 1][x+1] == '-'
+                or self.level[y - 1][x+3] == '-') \
             or collide_dir == 'down' \
-                and (self.level[y + 2][x] == '-'
-                or self.level[y + 2][x-2] == '-'
-                or self.level[y + 2][x+1] == '-') \
+                and (self.level[y+4][x] == '-'
+                or self.level[y+4][x+1] == '-'
+                or self.level[y+4][x+3] == '-') \
             or collide_dir == 'left' \
-                and (self.level[y][x - 3] == '-'
-                or self.level[y-2][x - 3] == '-'
-                or self.level[y+1][x - 3] == '-') \
-            or collide_dir == 'right'\
-                and (self.level[y][x + 2] == '-'
-                or self.level[y-2][x + 2] == '-'
-                or self.level[y+1][x + 2] == '-')
+                and (self.level[y][x - 1] == '-'
+                or self.level[y+1][x - 1] == '-'
+                or self.level[y+3][x - 1] == '-') \
+            or collide_dir == 'right' \
+                and (self.level[y][x+4] == '-'
+                or self.level[y+1][x+4] == '-'
+                or self.level[y+3][x+4] == '-')
         except IndexError as err:
             return collide_dir != 'right'
         # return self.rect.collidelist(list(map(lambda w: w.rect, walls))) != -1
