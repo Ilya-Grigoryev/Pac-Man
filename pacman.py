@@ -1,6 +1,5 @@
 import pygame
 
-#from records import Records
 
 
 class Pacman(pygame.sprite.Sprite):
@@ -17,8 +16,6 @@ class Pacman(pygame.sprite.Sprite):
         self.image.fill(pygame.Color(255, 255, 0))
         self.rect = pygame.Rect(x*wall_size-2*self.wall_size, y*wall_size-2*self.wall_size, 4*wall_size, 4*wall_size)
         self.food_counter = 0
-        self.bigdots_counter = 0
-        #self.record = Records
 
     def draw(self):
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
@@ -40,7 +37,6 @@ class Pacman(pygame.sprite.Sprite):
 
     def update(self, walls, dots, bigdots):
         self.change_dir()
-        # if not self.is_collide(walls):
         if not self.is_collide(self.dir):
             if self.dir == 'up':
                 self.y -= self.speed
@@ -57,14 +53,11 @@ class Pacman(pygame.sprite.Sprite):
             if dot.rect.colliderect(self.rect):
                 dots.pop(dots.index(dot))
                 self.food_counter += 1
-               # self.record.add(self.food_counter)
                 print(self.food_counter)
 
-        for bigdot in bigdots:
-            if bigdot.rect.colliderect(self.rect):
-                dots.pop(dots.index(bigdot))
-                self.bigdots_counter += 1
-                print(self.bigdots_counter)
+        for bigot in bigdots:
+            if bigot.rect.colliderect(self.rect):
+                bigdots.pop(bigdots.index(bigot))
 
         self.draw()
 

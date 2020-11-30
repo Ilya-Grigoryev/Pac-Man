@@ -33,7 +33,7 @@ class Game:
                 elif char == '*':
                     food = Dot(i * self.wall_size, j * self.wall_size, self.wall_size//2)
                     self.dots.append(food)
-                elif char == '0':
+                elif char == '+':
                     bigfood = Bigdot(i * self.wall_size, j * self.wall_size, self.wall_size)
                     self.bigdots.append(bigfood)
 
@@ -44,7 +44,7 @@ class Game:
             wall.draw(screen)
         for dot in self.dots:
             dot.draw(screen)
-        for bigdot in self.dots:
+        for bigdot in self.bigdots:
             bigdot.draw(screen)
 
         self.pacman.update(self.walls, self.dots, self.bigdots)
