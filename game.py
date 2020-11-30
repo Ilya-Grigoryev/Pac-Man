@@ -3,7 +3,9 @@ import pygame
 from block import Wall
 from dot import Dot
 from pacman import Pacman
+from bigdots import Bigdot
 #from records import Records
+
 
 class Game:
     def __init__(self, wall_size):
@@ -21,6 +23,7 @@ class Game:
 
         self.walls = []
         self.dots = []
+        self.bigdots = []
 
         for j, string in enumerate(self.level):
             for i, char in enumerate(string):
@@ -30,6 +33,9 @@ class Game:
                 elif char == '*':
                     food = Dot(i * self.wall_size, j * self.wall_size, self.wall_size//2)
                     self.dots.append(food)
+                elif char == '0':
+                    bigfood = Bigdot(i * self.wall_size, j * self.wall_size, self.wall_size)
+                    self.bigdots.append(bigfood)
 
     def update(self, screen):
         screen.fill((0, 0, 0))
@@ -38,5 +44,7 @@ class Game:
             wall.draw(screen)
         for dot in self.dots:
             dot.draw(screen)
+        for bigdot in self.dots:
+            bigdot.draw(screen)
 
-        self.pacman.update(self.walls, self.dots)
+        self.pacman.update(self.walls, self.dots, self.bigdots)
