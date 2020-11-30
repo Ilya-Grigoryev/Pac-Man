@@ -1,6 +1,7 @@
 import pygame
 
 
+
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, screen, x, y, level, wall_size):
         super().__init__()
@@ -22,7 +23,7 @@ class Pacman(pygame.sprite.Sprite):
         if self.rect.x <= 0:
             self.screen.blit(self.image,
                              (self.rect.x + 56 * self.wall_size, self.rect.y))
-        if (self.rect.x + 4 * self.wall_size) >= 56 *  self.wall_size:
+        if (self.rect.x + 4 * self.wall_size) >= 56 * self.wall_size:
             self.screen.blit(self.image,
                              (self.rect.x - 56 * self.wall_size, self.rect.y))
 
@@ -34,9 +35,8 @@ class Pacman(pygame.sprite.Sprite):
             self.x = 0
 
 
-    def update(self, walls, dots):
+    def update(self, walls, dots, bigdots):
         self.change_dir()
-        # if not self.is_collide(walls):
         if not self.is_collide(self.dir):
             if self.dir == 'up':
                 self.y -= self.speed
@@ -53,6 +53,10 @@ class Pacman(pygame.sprite.Sprite):
             if dot.rect.colliderect(self.rect):
                 dots.pop(dots.index(dot))
                 self.score += 10
+
+        for bigot in bigdots:
+            if bigot.rect.colliderect(self.rect):
+                bigdots.pop(bigdots.index(bigot))
 
         self.draw()
 

@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from game  import Game
+from game import Game
 
 
 def draw_menu(window, font):
