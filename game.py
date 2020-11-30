@@ -1,8 +1,9 @@
 import pygame
+
 from block import Wall
 from dot import Dot
 from pacman import Pacman
-
+#from records import Records
 
 class Game:
     def __init__(self, wall_size):

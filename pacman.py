@@ -1,5 +1,6 @@
 import pygame
 
+#from records import Records
 
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, screen, x, y, level, wall_size):
@@ -15,6 +16,7 @@ class Pacman(pygame.sprite.Sprite):
         self.image.fill(pygame.Color(255, 255, 0))
         self.rect = pygame.Rect(x*wall_size-2*self.wall_size, y*wall_size-2*self.wall_size, 4*wall_size, 4*wall_size)
         self.food_counter = 0
+        #self.record = Records
 
     def draw(self):
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
@@ -22,7 +24,7 @@ class Pacman(pygame.sprite.Sprite):
         if self.rect.x <= 0:
             self.screen.blit(self.image,
                              (self.rect.x + 56 * self.wall_size, self.rect.y))
-        if (self.rect.x + 4 * self.wall_size) >= 56 *  self.wall_size:
+        if (self.rect.x + 4 * self.wall_size) >= 56 * self.wall_size:
             self.screen.blit(self.image,
                              (self.rect.x - 56 * self.wall_size, self.rect.y))
 
@@ -53,6 +55,7 @@ class Pacman(pygame.sprite.Sprite):
             if dot.rect.colliderect(self.rect):
                 dots.pop(dots.index(dot))
                 self.food_counter += 1
+               # self.record.add(self.food_counter)
                 print(self.food_counter)
 
         self.draw()
