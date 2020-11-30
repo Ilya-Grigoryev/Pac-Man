@@ -64,6 +64,7 @@ class Game:
             self.level_over = False
             self.start(screen)
 
+
         # обновление TopBar
         self.update_TopBar(screen)
 

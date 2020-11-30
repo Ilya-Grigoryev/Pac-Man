@@ -57,6 +57,7 @@ class Pacman(pygame.sprite.Sprite):
         for bigot in bigdots:
             if bigot.rect.colliderect(self.rect):
                 bigdots.pop(bigdots.index(bigot))
+                self.score += 30
 
         self.draw()
 
