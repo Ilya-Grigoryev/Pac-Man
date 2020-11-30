@@ -14,7 +14,7 @@ class Pacman(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.wall_size*4, self.wall_size*4))
         self.image.fill(pygame.Color(255, 255, 0))
         self.rect = pygame.Rect(x*wall_size-2*self.wall_size, y*wall_size-2*self.wall_size, 4*wall_size, 4*wall_size)
-        self.food_counter = 0
+        self.score = 0
 
     def draw(self):
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
@@ -47,13 +47,12 @@ class Pacman(pygame.sprite.Sprite):
             elif self.dir == 'right':
                 self.x += self.speed
             self.rect.x = (self.x * self.wall_size)
-            self.rect.y = (self.y * self.wall_size)
+            self.rect.y = (self.y * self.wall_size + 100)
 
         for dot in dots:
             if dot.rect.colliderect(self.rect):
                 dots.pop(dots.index(dot))
-                self.food_counter += 1
-                print(self.food_counter)
+                self.score += 10
 
         self.draw()
 

@@ -20,7 +20,7 @@ WALL_SIZE = 10
 def main():
     pygame.init()
     pygame.display.set_caption("Pac-Man")
-    window = pygame.display.set_mode((WALL_SIZE * 56, WALL_SIZE * 62))
+    window = pygame.display.set_mode((WALL_SIZE * 56, WALL_SIZE * 62 + 150))
     clock = pygame.time.Clock()
 
     title_font = pygame.font.SysFont("textures/fonts/font.otf", 50)
@@ -28,8 +28,8 @@ def main():
     game = Game(WALL_SIZE)
 
     game_over = False
-    while not game_over:
 
+    while not game_over:
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -37,10 +37,10 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if game.location == 'menu':
                     if event.key == pygame.K_SPACE:
-                        game.location = "level 1"
+                        game.location = "level " + str(game.level)
                         game.start(window)
                         pygame.display.update()
-                elif game.location == 'level 1':
+                elif game.location == 'level ' + str(game.level):
                     if event.key == pygame.K_w or event.key == 1094:
                         game.pacman.newDir = 'up'
                     elif event.key == pygame.K_a or event.key == 1092:
