@@ -8,8 +8,8 @@ def draw_menu(window, font):
     window.fill((0, 0, 0))
     text = font.render("PAC-MAN", True, (225, 255, 77))
     window_rect = window.get_rect()
-    window.blit(text, text.get_rect(center=(window_rect.centerx, window_rect.centery-200)))
-    pygame.draw.rect(window, (0, 0, 0), (window_rect.centerx-100, window_rect.centery-25, 200, 50))
+    window.blit(text, text.get_rect(center=(window_rect.centerx, window_rect.centery - 200)))
+    pygame.draw.rect(window, (0, 0, 0), (window_rect.centerx - 100, window_rect.centery - 25, 200, 50))
     text = font.render("Press space to continue", True, (139, 153, 168))
     window.blit(text, text.get_rect(center=window_rect.center))
 
@@ -27,9 +27,7 @@ def main():
 
     game = Game(WALL_SIZE)
 
-    game_over = False
-
-    while not game_over:
+    while not game.game_over:
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -38,7 +36,7 @@ def main():
                 if game.location == 'menu':
                     if event.key == pygame.K_SPACE:
                         game.location = "level " + str(game.level)
-                        game.start(window)
+                        game.start(window, is_restart=True)
                         pygame.display.update()
                 elif game.location == 'level ' + str(game.level):
                     if event.key == pygame.K_w or event.key == 1094:
@@ -54,7 +52,6 @@ def main():
             draw_menu(window, title_font)
         else:
             game.update(window)
-
 
         pygame.display.flip()
         pygame.display.update()

@@ -1,7 +1,6 @@
 import pygame
 
 
-
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, screen, x, y, level, wall_size):
         super().__init__()
@@ -77,7 +76,6 @@ class Pacman(pygame.sprite.Sprite):
                    or collide_dir == 'right' and self.level[y][x+1] == '-'
         except IndexError:
             return collide_dir != 'right'
-
 
     def change_dir(self):
         if (self.newDir == 'up' or self.newDir == 'down') and self.x % 1 != 0 \
