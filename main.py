@@ -14,13 +14,13 @@ def draw_menu(window, font):
     window.blit(text, text.get_rect(center=window_rect.center))
 
 
-WALL_SIZE = 10
+WALL_SIZE = 20
 
 
 def main():
     pygame.init()
     pygame.display.set_caption("Pac-Man")
-    window = pygame.display.set_mode((WALL_SIZE * 56, WALL_SIZE * 62 + 150))
+    window = pygame.display.set_mode((WALL_SIZE * 28, WALL_SIZE * 31 + 150))
     clock = pygame.time.Clock()
 
     title_font = pygame.font.SysFont("textures/fonts/font.otf", 50)

@@ -8,13 +8,13 @@ class Pacman(pygame.sprite.Sprite):
         self.screen = screen
         self.level = level
         self.wall_size = wall_size
-        self.x, self.y = x, y
-        self.speed = 1
+        self.x, self.y = float(x), float(y)
+        self.speed = 0.5
         self.dir = 'up'
         self.newDir = 'up'
-        self.image = pygame.Surface((self.wall_size*4, self.wall_size*4))
+        self.image = pygame.Surface((self.wall_size, self.wall_size))
         self.image.fill(pygame.Color(255, 255, 0))
-        self.rect = pygame.Rect(x*wall_size-2*self.wall_size, y*wall_size-2*self.wall_size, 4*wall_size, 4*wall_size)
+        self.rect = pygame.Rect(x*wall_size, y*wall_size+100, wall_size, wall_size)
         self.score = 0
 
     def draw(self):
@@ -22,16 +22,16 @@ class Pacman(pygame.sprite.Sprite):
 
         if self.rect.x <= 0:
             self.screen.blit(self.image,
-                             (self.rect.x + 56 * self.wall_size, self.rect.y))
-        if (self.rect.x + 4 * self.wall_size) >= 56 * self.wall_size:
+                             (self.rect.x + 28 * self.wall_size, self.rect.y))
+        if (self.rect.x + self.wall_size) >= 28 * self.wall_size:
             self.screen.blit(self.image,
-                             (self.rect.x - 56 * self.wall_size, self.rect.y))
+                             (self.rect.x - 28 * self.wall_size, self.rect.y))
 
-        if (self.rect.x + 4 * self.wall_size) <= 0:
-            self.rect.x += 56 * self.wall_size
-            self.x = 52
-        if self.rect.x >= 56 * self.wall_size:
-            self.rect.x -= 56 * self.wall_size
+        if (self.rect.x + self.wall_size) <= 0:
+            self.rect.x += 28 * self.wall_size
+            self.x = 27
+        if self.rect.x >= 28 * self.wall_size:
+            self.rect.x -= 28 * self.wall_size
             self.x = 0
 
 
@@ -49,6 +49,7 @@ class Pacman(pygame.sprite.Sprite):
             self.rect.x = (self.x * self.wall_size)
             self.rect.y = (self.y * self.wall_size + 100)
 
+
         for dot in dots:
             if dot.rect.colliderect(self.rect):
                 dots.pop(dots.index(dot))
@@ -63,30 +64,24 @@ class Pacman(pygame.sprite.Sprite):
 
     def is_collide(self, collide_dir):
         try:
-            x = self.x
-            y = self.y
-            return collide_dir == 'up' \
-                and (self.level[y - 1][x] == '-'
-                or self.level[y - 1][x+1] == '-'
-                or self.level[y - 1][x+3] == '-') \
-            or collide_dir == 'down' \
-                and (self.level[y+4][x] == '-'
-                or self.level[y+4][x+1] == '-'
-                or self.level[y+4][x+3] == '-') \
-            or collide_dir == 'left' \
-                and (self.level[y][x - 1] == '-'
-                or self.level[y+1][x - 1] == '-'
-                or self.level[y+3][x - 1] == '-') \
-            or collide_dir == 'right' \
-                and (self.level[y][x+4] == '-'
-                or self.level[y+1][x+4] == '-'
-                or self.level[y+3][x+4] == '-')
-        except IndexError as err:
-            return collide_dir != 'right'
-        # return self.rect.collidelist(list(map(lambda w: w.rect, walls))) != -1
+            if (collide_dir == 'up' or collide_dir == 'down') and (self.y % 1 != 0) \
+                    or (collide_dir == 'left' or collide_dir == 'right') and (self.x % 1 != 0):
+                return False
 
+            x = int(self.x)
+            y = int(self.y)
+
+            return collide_dir == 'up' and self.level[y-1][x] == '-' \
+                   or collide_dir == 'down' and self.level[y+1][x] == '-' \
+                   or collide_dir == 'left' and self.level[y][x-1] == '-' \
+                   or collide_dir == 'right' and self.level[y][x+1] == '-'
+        except IndexError:
+            return collide_dir != 'right'
 
 
     def change_dir(self):
+        if (self.newDir == 'up' or self.newDir == 'down') and self.x % 1 != 0 \
+        or (self.newDir == 'left' or self.newDir == 'right') and self.y % 1 != 0:
+            return
         if not self.is_collide(self.newDir):
             self.dir = self.newDir

@@ -10,4 +10,4 @@ class Dot(pygame.sprite.Sprite):
         self.size = size
 
     def draw(self, screen):
-        pygame.draw.circle(screen, (255, 255, 0), (self.rect.centerx, self.rect.centery), self.size)
+        pygame.draw.circle(screen, (255, 255, 0), (self.rect.x, self.rect.y), self.size)

@@ -23,7 +23,7 @@ class Game:
         with open("level.txt", 'r') as f:
             self.map = f.read().split('\n')
 
-        self.pacman = Pacman(screen, 26, 46, self.map, self.wall_size)
+        self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
 
         self.walls = []
         self.dots = []
@@ -35,10 +35,12 @@ class Game:
                     wall = Wall(i * self.wall_size, j * self.wall_size+100, self.wall_size)
                     self.walls.append(wall)
                 elif char == '*':
-                    food = Dot(i * self.wall_size, j * self.wall_size+100, self.wall_size//2)
+                    food = Dot(i * self.wall_size+self.wall_size//2,
+                               j * self.wall_size+100+self.wall_size//2, self.wall_size//6)
                     self.dots.append(food)
                 elif char == '+':
-                    bigfood = Bigdot(i * self.wall_size, j * self.wall_size+100, self.wall_size)
+                    bigfood = Bigdot(i * self.wall_size+self.wall_size//2,
+                                     j * self.wall_size+100+self.wall_size//2, self.wall_size//2.5)
                     self.bigdots.append(bigfood)
 
 
