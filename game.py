@@ -107,9 +107,6 @@ class Game:
         # обновление Pac-Man
         self.pacman.update(self.walls, self.dots)
 
-        # if self.delay:
-        #     return
-
         # обновление привидений
         for ghost in self.ghosts:
             ghost.update()
