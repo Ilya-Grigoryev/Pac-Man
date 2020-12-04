@@ -163,6 +163,7 @@ class Game:
     def off_runway(self):
         self.kills = 0
         for ghost in self.ghosts:
+            ghost.runaway = False
             ghost.speed = 0.5
             ghost.create_route(compulsion=True)
             self.is_runaway = False
