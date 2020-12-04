@@ -26,6 +26,11 @@ class Game:
         self.font = pygame.font.Font('textures/fonts/arcade_classic.ttf', 36)
         self.score = 0
         self.health = 2
+        self.bg_surf = pygame.image.load('textures/map.png')
+        self.bg_surf = pygame.transform.scale(self.bg_surf, (28*self.wall_size, 31*self.wall_size))
+        self.bg_rect = self.bg_surf.get_rect()
+        self.bg_rect = self.bg_rect.move(0, 100)
+        # self.bg_rect = self.bg_surf.get_rect(topleft=(0, 0))
         # сюда будем дописывать общие переменные
 
     def start(self, screen, is_restart=False):
@@ -55,9 +60,9 @@ class Game:
 
     def update(self, screen):
         screen.fill((0, 0, 0))
-
-        for wall in self.walls:
-            wall.draw(screen)
+        screen.blit(self.bg_surf, self.bg_rect)
+        # for wall in self.walls:
+        #     wall.draw(screen)
         for dot in self.dots:
             dot.draw(screen)
         for bigdot in self.bigdots:
