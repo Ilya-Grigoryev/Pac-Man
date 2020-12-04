@@ -59,14 +59,9 @@ class Game:
             f.write('\n'.join(scores))
 
     def start(self, screen, is_restart=False, is_new_level=False):
-        if is_restart:
-            self.health = 2
-            self.score = 0
-            self.level = 1
         with open("level.txt", 'r') as f:
             self.map = f.read().split('\n')
 
-        self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
         self.kills = 0
         self.ghosts = []
         if is_restart:
@@ -88,6 +83,16 @@ class Game:
                     bigfood = Bigdot(i * self.wall_size + self.wall_size // 2,
                                      j * self.wall_size + 100 + self.wall_size // 2, self.wall_size // 2.5)
                     self.bigdots.append(bigfood)
+
+        if is_restart:
+            self.health = 2
+            self.score = 0
+            self.level = 1
+            self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
+        else:
+            last_score = self.pacman.score
+            self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
+            self.pacman.score = last_score
 
     def update(self, screen):
         #  отрисовка
@@ -133,6 +138,7 @@ class Game:
                     self.health -= 1
                     if self.health == 0:
                         self.location = "menu"
+                        print(f"self.score: {self.score},  self.pacman.score: {self.pacman.score}")
                         self.scores.append(self.score + self.pacman.score)
                         self.save_scores(self.scores)
                     else:
