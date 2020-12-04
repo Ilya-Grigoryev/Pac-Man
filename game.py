@@ -67,10 +67,11 @@ class Game:
         if is_restart:
             self.bigdots = []
             self.dots = []
-        self.ghosts.append(Speedy(screen, 12, 13, (235, 165, 58), self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 15, 13, (230, 62, 37), self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 12, 15, (242, 183, 178), self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 15, 15, (99, 218, 223), self.map, self.wall_size))
+
+        self.ghosts.append(Speedy(screen, 12, 13, 'red', self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 15, 13, 'yellow', self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 12, 15, 'blue', self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 15, 15, 'pink', self.map, self.wall_size))
 
         for j, string in enumerate(self.map):
             for i, char in enumerate(string):
@@ -159,6 +160,7 @@ class Game:
 
     def on_runaway(self):
         for ghost in self.ghosts:
+            ghost.runaway = True
             ghost.speed = 0.1
             ghost.create_route(compulsion=True)
             self.is_runaway = True
@@ -167,6 +169,7 @@ class Game:
     def off_runway(self):
         self.kills = 0
         for ghost in self.ghosts:
+            ghost.runaway = False
             ghost.speed = 0.5
             ghost.create_route(compulsion=True)
             self.is_runaway = False

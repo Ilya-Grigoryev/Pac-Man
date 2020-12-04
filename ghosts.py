@@ -5,6 +5,7 @@ import time
 
 class Speedy:
     def __init__(self, screen, x, y, color, level, wall_size):
+        self.runaway = False
         self.screen = screen
         self.speed = 0.5
         self.start_x, self.start_y = float(x), float(y)
@@ -12,9 +13,12 @@ class Speedy:
         self.color = color
         self.level = level
         self.wall_size = wall_size
-        self.image = pygame.Surface((self.wall_size, self.wall_size))
-        self.image.fill(pygame.Color(color))
+        # self.image = pygame.Surface((self.wall_size, self.wall_size))
+        # self.image.fill(pygame.Color(color))
         self.rect = pygame.Rect(x * wall_size, y * wall_size + 100, wall_size, wall_size)
+        self.img_surf = pygame.image.load(f'textures/ghosts/{self.color}.png')
+        self.runaway_img_surf = pygame.image.load('textures/ghosts/runaway.png')
+        self.runaway_img_surf = pygame.transform.scale(self.runaway_img_surf, (32, 32))
         self.route = []
         self.targets = []
         self.state = "lives"
@@ -49,7 +53,10 @@ class Speedy:
                 self.create_route(compulsion=True)
 
     def draw(self):
-        self.screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.runaway:
+            self.screen.blit(self.runaway_img_surf, (self.rect.x-8, self.rect.y-8))
+        else:
+            self.screen.blit(self.img_surf, (self.rect.x-8, self.rect.y-8))
 
     def create_route(self, compulsion=False):
         if not ((self.x % 1 == 0 and self.y % 1 == 0) and (time.time() - self.time >= self.delta_time)):
@@ -73,7 +80,6 @@ class Speedy:
             elif cage_x != bfs_route[i + 1][1]:
                 delta = 1 * self.speed if cage_x < bfs_route[i + 1][1] else -1 * self.speed
                 x = cage_x
-                # print(f"{x} < {bfs_route[i + 1][1]}, delta: {delta}")
                 while x < bfs_route[i + 1][1]:
                     self.route.append((cage_y, x))
                     x += delta
@@ -107,8 +113,6 @@ class Speedy:
                     path.append((r, c))
                     r, c = visited[(r, c)]
                 path.reverse()
-                # path.pop(0)
-                # print(path)
                 return path
             for dx, dy in ((-1, 0), (0, -1), (1, 0), (0, 1)):
                 new_r = r + dy
