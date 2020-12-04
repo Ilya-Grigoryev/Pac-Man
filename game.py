@@ -30,7 +30,7 @@ class Game:
         self.level = 1
         self.font = pygame.font.Font('textures/fonts/arcade_classic.ttf', 36)
         self.score = 0
-        self.health = 2
+        self.health = 5
         self.bg_surf = pygame.image.load('textures/map.png')
         self.bg_surf = pygame.transform.scale(self.bg_surf, (28*self.wall_size, 31*self.wall_size))
         self.bg_rect = self.bg_surf.get_rect()
@@ -67,8 +67,10 @@ class Game:
         if is_restart:
             self.bigdots = []
             self.dots = []
-        self.ghosts.append(Speedy(screen, 11, 13, 'red', self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 14, 13, 'blue', self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 12, 13, (235, 165, 58), self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 15, 13, (230, 62, 37), self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 12, 15, (242, 183, 178), self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 15, 15, (99, 218, 223), self.map, self.wall_size))
 
         for j, string in enumerate(self.map):
             for i, char in enumerate(string):
@@ -138,7 +140,6 @@ class Game:
                     self.health -= 1
                     if self.health == 0:
                         self.location = "menu"
-                        print(f"self.score: {self.score},  self.pacman.score: {self.pacman.score}")
                         self.scores.append(self.score + self.pacman.score)
                         self.save_scores(self.scores)
                     else:
