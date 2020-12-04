@@ -36,7 +36,6 @@ class Game:
         self.bg_rect = self.bg_surf.get_rect()
         self.bg_rect = self.bg_rect.move(0, 100)
         self.scores = self.read_scores()
-        print("scores:", self.scores)
         # сюда будем дописывать общие переменные
 
     def read_scores(self):
@@ -55,12 +54,11 @@ class Game:
 
     def save_scores(self, scores):
         with open('records.txt', 'w') as f:
-            print("save: ", scores)
             scores.sort(reverse=True)
             scores = list(map(str, scores))
             f.write('\n'.join(scores))
 
-    def start(self, screen, is_restart=False):
+    def start(self, screen, is_restart=False, is_new_level=False):
         if is_restart:
             self.health = 2
             self.score = 0
@@ -82,11 +80,11 @@ class Game:
                 if char == '-':
                     wall = Wall(i * self.wall_size, j * self.wall_size + 100, self.wall_size)
                     self.walls.append(wall)
-                elif char == '*' and is_restart:
+                elif char == '*' and (is_restart or is_new_level):
                     food = Dot(i * self.wall_size + self.wall_size // 2,
                                j * self.wall_size + 100 + self.wall_size // 2, self.wall_size // 6)
                     self.dots.append(food)
-                elif char == '+' and is_restart:
+                elif char == '+' and (is_restart or is_new_level):
                     bigfood = Bigdot(i * self.wall_size + self.wall_size // 2,
                                      j * self.wall_size + 100 + self.wall_size // 2, self.wall_size // 2.5)
                     self.bigdots.append(bigfood)
@@ -108,6 +106,11 @@ class Game:
 
         # обновление Pac-Man
         self.pacman.update(self.walls, self.dots)
+
+        # if self.delay:
+        #     return
+
+        # обновление привидений
         for ghost in self.ghosts:
             ghost.update()
 
@@ -124,7 +127,7 @@ class Game:
             self.level += 1
             self.location = "level " + str(self.level)
             self.level_over = False
-            self.start(screen)
+            self.start(screen, is_new_level=True)
 
         #  проверка на столкновение с привидением
         for ghost in self.ghosts:
