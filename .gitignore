@@ -2,3 +2,4 @@
 venv/
 __pycache__/
 records.txt
+.DS_Store
