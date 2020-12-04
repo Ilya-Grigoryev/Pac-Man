@@ -17,7 +17,7 @@ def draw_menu(window, font, game):
         if i == 5:
             break
         text = font.render(f"{i+1}.  {game.scores[i]}", True, (139, 153, 168))
-        window.blit(text, (window_rect.centerx-40, window_rect.centery - 150 + i*40))
+        window.blit(text, (window_rect.centerx-90, window_rect.centery - 150 + i*40))
         pygame.draw.rect(window, (139, 153, 168),
                          (window_rect.centerx - 100, window_rect.centery - 154 + i*40, 200, 40), 2)
     text = font.render("Press space to continue", True, (139, 153, 168))
