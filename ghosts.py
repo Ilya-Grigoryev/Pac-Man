@@ -7,15 +7,19 @@ class Speedy:
     def __init__(self, screen, x, y, color, level, wall_size):
         self.screen = screen
         self.speed = 0.5
-        self.x, self.y = float(x), float(y)
+        self.start_x, self.start_y = float(x), float(y)
+        self.x, self.y = self.start_x, self.start_y
         self.color = color
         self.level = level
         self.wall_size = wall_size
         self.image = pygame.Surface((self.wall_size, self.wall_size))
-        self.image.fill(pygame.Color(220, 0, 0))
+        self.image.fill(pygame.Color(color))
         self.rect = pygame.Rect(x * wall_size, y * wall_size + 100, wall_size, wall_size)
         self.route = []
         self.targets = []
+        self.state = "lives"
+        self.cooldown_delta_time = 4
+        self.cooldown_time = time.time() - self.cooldown_delta_time
         for maze_y, string in enumerate(self.level):
             for maze_x, char in enumerate(string):
                 if char != '-' and char != '.':
@@ -24,20 +28,32 @@ class Speedy:
         self.time = time.time() - self.delta_time
         self.create_route()
 
+    def kill(self):
+        self.state = "killed"
+        self.cooldown_time = time.time()
+
     def update(self):
-        self.create_route()
-        # print(f"len(route) = {len(self.route)}")
-        self.rect.x = (self.x * self.wall_size)
-        self.rect.y = (self.y * self.wall_size + 100)
-        self.draw()
-        self.y, self.x = self.route.pop(0)
+        if self.state == "lives":
+            self.create_route()
+            self.rect.x = (self.x * self.wall_size)
+            self.rect.y = (self.y * self.wall_size + 100)
+            self.draw()
+            self.y, self.x = self.route.pop(0)
+
+        elif self.state == "killed":
+            if time.time() - self.cooldown_time >= self.cooldown_delta_time:
+                self.state = "lives"
+                self.x, self.y = self.start_x, self.start_y
+                self.rect.x = (self.x * self.wall_size)
+                self.rect.y = (self.y * self.wall_size + 100)
+                self.create_route(compulsion=True)
 
     def draw(self):
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
 
-    def create_route(self):
+    def create_route(self, compulsion=False):
         if not ((self.x % 1 == 0 and self.y % 1 == 0) and (time.time() - self.time >= self.delta_time)):
-            if len(self.route) > 1:
+            if len(self.route) > 1 and not compulsion:
                 return None
         bfs_route = self.__bfs()
         while not bfs_route:

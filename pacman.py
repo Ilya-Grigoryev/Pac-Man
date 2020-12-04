@@ -33,8 +33,7 @@ class Pacman(pygame.sprite.Sprite):
             self.rect.x -= 28 * self.wall_size
             self.x = 0
 
-
-    def update(self, walls, dots, bigdots):
+    def update(self, walls, dots):
         self.change_dir()
         if not self.is_collide(self.dir):
             if self.dir == 'up':
@@ -48,16 +47,10 @@ class Pacman(pygame.sprite.Sprite):
             self.rect.x = (self.x * self.wall_size)
             self.rect.y = (self.y * self.wall_size + 100)
 
-
         for dot in dots:
             if dot.rect.colliderect(self.rect):
                 dots.pop(dots.index(dot))
                 self.score += 10
-
-        for bigot in bigdots:
-            if bigot.rect.colliderect(self.rect):
-                bigdots.pop(bigdots.index(bigot))
-                self.score += 30
 
         self.draw()
 
