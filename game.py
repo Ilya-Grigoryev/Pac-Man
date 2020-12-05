@@ -25,6 +25,7 @@ class Game:
         self.game_over = False
         self.level = 1
         self.font = pygame.font.Font('textures/fonts/arcade_classic.ttf', 36)
+        self.health_img = pygame.image.load('textures/pacman/left/2.png')
         self.score = 0
         self.health = 5
         self.bg_surf = pygame.image.load('textures/map.png')
@@ -171,5 +172,7 @@ class Game:
         screen.blit(level_text, (10, 10))
 
     def update_BottomBar(self, screen):
-        health_text = self.font.render(f'Health {self.health}', True, (220, 220, 220))
-        screen.blit(health_text, (10, 100 + self.wall_size*31 + 20))
+        # health_text = self.font.render(f'Health {self.health}', True, (220, 220, 220))
+        # screen.blit(health_text, (10, 100 + self.wall_size*31 + 20))
+        for i in range(int(self.health)):
+            screen.blit(self.health_img, (10+i*40, 100 + self.wall_size*31 + 10))
