@@ -11,20 +11,33 @@ class Pacman(pygame.sprite.Sprite):
         self.speed = 0.5
         self.dir = 'up'
         self.newDir = 'up'
-        self.image = pygame.Surface((self.wall_size, self.wall_size))
-        self.image.fill(pygame.Color(255, 255, 0))
+        # self.image = pygame.Surface((self.wall_size, self.wall_size))
+        # self.image.fill(pygame.Color(255, 255, 0))
         self.rect = pygame.Rect(x*wall_size, y*wall_size+100, wall_size, wall_size)
+        self.img_surf = {
+            'down': [pygame.image.load(f'textures/pacman/down/{i}.png') for i in range(1, 3 + 1)],
+            'left': [pygame.image.load(f'textures/pacman/left/{i}.png') for i in range(1, 3 + 1)],
+            'right': [pygame.image.load(f'textures/pacman/right/{i}.png') for i in range(1, 3 + 1)],
+            'up': [pygame.image.load(f'textures/pacman/up/{i}.png') for i in range(1, 3 + 1)]
+        }
+        self.img_index = 2
+        self.img_index_dir = 1
         self.score = 0
         self.kills = 0
 
     def draw(self):
-        self.screen.blit(self.image, (self.rect.x, self.rect.y))
+        if self.img_index == 3 or self.img_index == 1:
+            self.img_index_dir *= -1
+        self.img_index += self.img_index_dir
+        if self.is_collide(self.dir):
+            self.img_index = 2
+        self.screen.blit(self.img_surf[self.dir][self.img_index-1], (self.rect.x, self.rect.y))
 
         if self.rect.x <= 0:
-            self.screen.blit(self.image,
+            self.screen.blit(self.img_surf[self.dir][self.img_index - 1],
                              (self.rect.x + 28 * self.wall_size, self.rect.y))
         if (self.rect.x + self.wall_size) >= 28 * self.wall_size:
-            self.screen.blit(self.image,
+            self.screen.blit(self.img_surf[self.dir][self.img_index - 1],
                              (self.rect.x - 28 * self.wall_size, self.rect.y))
 
         if (self.rect.x + self.wall_size) <= 0:
@@ -39,7 +52,7 @@ class Pacman(pygame.sprite.Sprite):
         if not self.is_collide(self.dir):
             if self.dir == 'up':
                 self.y -= self.speed
-            elif self.dir  == 'down':
+            elif self.dir == 'down':
                 self.y += self.speed
             elif self.dir == 'left':
                 self.x -= self.speed

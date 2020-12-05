@@ -62,10 +62,6 @@ class Game:
             self.map = f.read().split('\n')
         if is_restart:
             self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
-        else:
-            last_pacman_score = self.pacman.score
-            self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
-            self.pacman.score = last_pacman_score
 
         self.ghosts = []
         if is_restart:
@@ -76,7 +72,6 @@ class Game:
         self.ghosts.append(Speedy(screen, 15, 13, 'yellow', self.map, self.wall_size, self.pacman))
         self.ghosts.append(Speedy(screen, 12, 15, 'blue', self.map, self.wall_size, self.pacman))
         self.ghosts.append(Speedy(screen, 15, 15, 'pink', self.map, self.wall_size, self.pacman))
-
 
         for j, string in enumerate(self.map):
             for i, char in enumerate(string):
@@ -93,7 +88,7 @@ class Game:
                     self.bigdots.append(bigfood)
 
         if is_restart:
-            self.health = 2
+            self.health = 5
             self.score = 0
             self.level = 1
             self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
