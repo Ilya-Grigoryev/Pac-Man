@@ -45,7 +45,6 @@ class Speedy:
         self.runaway_time = time.time()
 
     def runaway_finish(self):
-        self.pacman.kills = 0
         self.runaway = False
         self.speed = 0.5
         self.create_route(compulsion=True)

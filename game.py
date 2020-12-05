@@ -8,9 +8,6 @@ from ghosts import Speedy
 from bigdots import Bigdot
 
 
-# from records import Records
-
-
 class Game:
     def __init__(self, wall_size):
         self.time = time.time()
@@ -128,7 +125,7 @@ class Game:
 
         # проверка на съедение всех точек
         if len(self.dots) == 0 and len(self.bigdots) == 0:
-            self.score += self.pacman.score
+            # self.score += self.pacman.score
             self.level += 1
             self.location = "level"
             self.level_over = False
@@ -163,6 +160,7 @@ class Game:
             ghost.runaway_start()
 
     def off_runway(self):
+        self.pacman.kills = 0
         for ghost in self.ghosts:
             ghost.runaway_finish()
 
