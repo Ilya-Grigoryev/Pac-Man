@@ -4,8 +4,10 @@ import time
 
 
 class Speedy:
-    def __init__(self, screen, x, y, color, level, wall_size):
+    def __init__(self, screen, x, y, color, level, wall_size, pacman):
+        self.pacman = pacman
         self.runaway = False
+        self.runaway_end = False
         self.screen = screen
         self.speed = 0.5
         self.start_x, self.start_y = float(x), float(y)
@@ -18,7 +20,9 @@ class Speedy:
         self.rect = pygame.Rect(x * wall_size, y * wall_size + 100, wall_size, wall_size)
         self.img_surf = pygame.image.load(f'textures/ghosts/{self.color}.png')
         self.runaway_img_surf = pygame.image.load('textures/ghosts/runaway.png')
+        self.runawayend_img_surf = pygame.image.load('textures/ghosts/runaway_end.png')
         self.runaway_img_surf = pygame.transform.scale(self.runaway_img_surf, (32, 32))
+        self.runawayend_img_surf = pygame.transform.scale(self.runawayend_img_surf, (32, 32))
         self.route = []
         self.targets = []
         self.state = "lives"
@@ -30,7 +34,22 @@ class Speedy:
                     self.targets.append((maze_y, maze_x))
         self.delta_time = 5
         self.time = time.time() - self.delta_time
+        self.runaway_delta_time = 6
+        self.runaway_time  = time.time() - self.runaway_delta_time
         self.create_route()
+
+    def runaway_start(self):
+        self.runaway = True
+        self.speed = 0.1
+        self.create_route(compulsion=True)
+        self.runaway_time = time.time()
+
+    def runaway_finish(self):
+        self.pacman.kills = 0
+        self.runaway = False
+        self.speed = 0.5
+        self.create_route(compulsion=True)
+        self.runaway_time = time.time() - self.runaway_delta_time
 
     def kill(self):
         self.state = "killed"
@@ -38,6 +57,13 @@ class Speedy:
 
     def update(self):
         if self.state == "lives":
+            if time.time() - self.runaway_time >= self.runaway_delta_time - 1 and \
+                    time.time() - self.runaway_time < self.runaway_delta_time:
+                self.runaway_end = True
+            else:
+                self.runaway_end = False
+            if time.time() - self.runaway_time >= self.runaway_delta_time and self.runaway:
+                self.runaway_finish()
             self.create_route()
             self.rect.x = (self.x * self.wall_size)
             self.rect.y = (self.y * self.wall_size + 100)
@@ -53,10 +79,13 @@ class Speedy:
                 self.create_route(compulsion=True)
 
     def draw(self):
-        if self.runaway:
-            self.screen.blit(self.runaway_img_surf, (self.rect.x-8, self.rect.y-8))
+        delta = 2
+        if self.runaway_end:
+            self.screen.blit(self.runawayend_img_surf, (self.rect.x - delta, self.rect.y - delta))
+        elif self.runaway:
+            self.screen.blit(self.runaway_img_surf, (self.rect.x-delta, self.rect.y-delta))
         else:
-            self.screen.blit(self.img_surf, (self.rect.x-8, self.rect.y-8))
+            self.screen.blit(self.img_surf, (self.rect.x-delta, self.rect.y-delta))
 
     def create_route(self, compulsion=False):
         if not ((self.x % 1 == 0 and self.y % 1 == 0) and (time.time() - self.time >= self.delta_time)):

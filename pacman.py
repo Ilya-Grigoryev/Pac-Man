@@ -15,6 +15,7 @@ class Pacman(pygame.sprite.Sprite):
         self.image.fill(pygame.Color(255, 255, 0))
         self.rect = pygame.Rect(x*wall_size, y*wall_size+100, wall_size, wall_size)
         self.score = 0
+        self.kills = 0
 
     def draw(self):
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
