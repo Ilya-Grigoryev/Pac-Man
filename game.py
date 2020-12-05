@@ -20,7 +20,6 @@ class Game:
         self.location = "menu"
         self.map = None
         self.pacman = None
-        self.kills = 0
         self.ghosts = []
         self.walls = []
         self.dots = []
@@ -61,17 +60,23 @@ class Game:
     def start(self, screen, is_restart=False, is_new_level=False):
         with open("level.txt", 'r') as f:
             self.map = f.read().split('\n')
+        if is_restart:
+            self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
+        else:
+            last_pacman_score = self.pacman.score
+            self.pacman = Pacman(screen, 13.5, 23, self.map, self.wall_size)
+            self.pacman.score = last_pacman_score
 
-        self.kills = 0
         self.ghosts = []
         if is_restart:
             self.bigdots = []
             self.dots = []
 
-        self.ghosts.append(Speedy(screen, 12, 13, 'red', self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 15, 13, 'yellow', self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 12, 15, 'blue', self.map, self.wall_size))
-        self.ghosts.append(Speedy(screen, 15, 15, 'pink', self.map, self.wall_size))
+        self.ghosts.append(Speedy(screen, 12, 13, 'red', self.map, self.wall_size, self.pacman))
+        self.ghosts.append(Speedy(screen, 15, 13, 'yellow', self.map, self.wall_size, self.pacman))
+        self.ghosts.append(Speedy(screen, 12, 15, 'blue', self.map, self.wall_size, self.pacman))
+        self.ghosts.append(Speedy(screen, 15, 15, 'pink', self.map, self.wall_size, self.pacman))
+
 
         for j, string in enumerate(self.map):
             for i, char in enumerate(string):
@@ -130,14 +135,14 @@ class Game:
         if len(self.dots) == 0 and len(self.bigdots) == 0:
             self.score += self.pacman.score
             self.level += 1
-            self.location = "level " + str(self.level)
+            self.location = "level"
             self.level_over = False
             self.start(screen, is_new_level=True)
 
         #  проверка на столкновение с привидением
         for ghost in self.ghosts:
             if self.pacman.rect.colliderect(ghost.rect):
-                if not self.is_runaway:
+                if not ghost.runaway:
                     self.health -= 1
                     if self.health == 0:
                         self.location = "menu"
@@ -147,8 +152,8 @@ class Game:
                         self.start(screen)
 
                 elif ghost.state == "lives":
-                    self.kills += 1
-                    self.pacman.score += self.kills * 200
+                    self.pacman.kills += 1
+                    self.pacman.score += self.pacman.kills * 200
                     ghost.kill()
                 break
 
@@ -160,20 +165,11 @@ class Game:
 
     def on_runaway(self):
         for ghost in self.ghosts:
-            ghost.runaway = True
-            ghost.speed = 0.1
-            ghost.create_route(compulsion=True)
-            self.is_runaway = True
-            self.time = time.time()
+            ghost.runaway_start()
 
     def off_runway(self):
-        self.kills = 0
         for ghost in self.ghosts:
-            ghost.runaway = False
-            ghost.speed = 0.5
-            ghost.create_route(compulsion=True)
-            self.is_runaway = False
-            self.time = time.time()
+            ghost.runaway_finish()
 
     def update_TopBar(self, screen):
         score_text = self.font.render(f'Score {self.score + self.pacman.score}', True, (220, 220, 220))
